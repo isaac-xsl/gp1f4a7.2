@@ -1,0 +1,31 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "debian/bullseye64"
+  config.vm.hostname = "isvepi.fjeclot.net  "
+  config.vm.provider "virtualbox" do |v|
+    # v.gui = true
+    v.name = "pj9f4a7.2_isvepi"
+    v.memory = 2048
+    v.cpus = 1
+    v.customize ['modifyvm', :id, '--clipboard', 'bidirectional']     
+    config.vm.synced_folder "../codi" "/var/www/html"
+  end
+
+  config.vm.network "public_network"
+
+  config.vm.network "forwarded_port", guest: 80, host: 8080
+  config.vm.network "forwarded_port", guest: 443, host: 8443
+  
+  config.vm.provision "shell", inline: <<-SHELL
+    sudo apt-get update -y
+    sudo apt-get install -y net-tools
+    sudo apt-get install -y apache2 apache2-doc
+    sudo apt-get install -y libapache2-mod-php
+    sudo apt-get install -y php7.4 
+    sudo apt-get install -y mariadb-server
+    sudo apt-get install -y mariadb-client
+    sudo apt-get install -y php7.4-mysql
+    sudo apt-get install -y composer
+    sudo apt-get install -y aptitude
+  SHELL
+
+end
